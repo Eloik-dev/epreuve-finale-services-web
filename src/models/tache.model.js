@@ -31,24 +31,36 @@ class Tache {
 
     // Ajoute une tâche pour un utilisateur
     static ajouter(cleApi = "", titre, description, date_debut, date_echeance) {
-        return new Promise((resolve) => {
-            const requete = `
-            INSERT INTO taches (utilisateur_id, titre, description, date_debut, date_echeance) VALUES (
-                $1::int,
-                $2::text,
-                $3::text,
-                $4::text,
-                $5::text
-            ) RETURNING *;`;
-
-            const parametres = [cleApi, titre, description, date_debut, date_echeance];
-
-            sql.query(requete, parametres, (erreur, resultat) => {
+        return new Promise((resolve, reject) => {
+            // Requête pour obtenir l'ID de l'utilisateur à partir de la clé API
+            const requeteUtilisateur = 'SELECT id FROM utilisateur WHERE cle_api = $1::text';
+            sql.query(requeteUtilisateur, [cleApi], (erreur, resultat) => {
                 if (erreur) {
-                    throw new Error(`Erreur sqlState ${erreur.code} : ${erreur.message}`);
-                }
+                    reject(new Error(`Erreur sqlState ${erreur.code} : ${erreur.message}`));
+                } else if (resultat.rows.length === 0) {
+                    reject(new Error(`Aucun utilisateur trouvé avec la clé API ${cleApi}`));
+                } else {
+                    const utilisateur_id = resultat.rows[0].id;
 
-                resolve(resultat.rows);
+                    // Requête pour insérer la nouvelle tâche
+                    const requeteTache = `
+                    INSERT INTO taches (utilisateur_id, titre, description, date_debut, date_echeance) VALUES (
+                        $1::int,
+                        $2::text,
+                        $3::text,
+                        $4::text,
+                        $5::text
+                    ) RETURNING *;`;
+                    const parametres = [utilisateur_id, titre, description, date_debut, date_echeance];
+
+                    sql.query(requeteTache, parametres, (erreur, resultat) => {
+                        if (erreur) {
+                            reject(new Error(`Erreur sqlState ${erreur.code} : ${erreur.message}`));
+                        } else {
+                            resolve(resultat.rows);
+                        }
+                    });
+                }
             });
         });
     }

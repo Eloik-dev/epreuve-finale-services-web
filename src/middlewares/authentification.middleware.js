@@ -6,20 +6,21 @@ const HttpError = require("../utils/HttpError");
  */
 const authentification = (req, res, next) => {
     try {
-        const cle_api = req.headers?.authorization.split(' ')[1];
-        
+        const authorization = req?.headers.authorization;
+
+        if (authorization === undefined) {
+            throw new HttpError("Aucune clé API n'a été passée.", 401);
+        }
+
+        const cle_api = authorization.split(' ')[1];
+
         if (!Utilisateur.validationCle(cle_api)) {
             throw new HttpError(`La clé d'API n'existe pas ou est invalide. (${cle_api})`, 401);
         }
 
         next();
     } catch (erreur) {
-        if (erreur instanceof HttpError) {
-            res.status(erreur.code).send(erreur.message);
-        } else {
-            console.error(erreur);
-            res.status(500).send("Une erreur inconnue est survenue, veuillez réessayer plus tard.");
-        }
+        next(erreur)
     }
 }
 

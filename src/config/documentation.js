@@ -1,5 +1,3 @@
-require('dotenv').config();
-
 const documentation = {
     openapi: '3.1.0',
     info: {
@@ -30,8 +28,195 @@ const documentation = {
     },
     security: [{
         ApiKeyAuth: [process.env.API_KEY]
-    }]
-
+    }],
+    tags: [
+        {
+            name: 'Utilisateurs',
+            description: 'Opérations liées aux utilisateurs'
+        },
+        {
+            name: 'Tâches',
+            description: 'Opérations liées aux tâches'
+        }
+    ],
+    paths: {
+        '/taches/afficher': {
+            get: {
+                tags: ['Tâches'],
+                summary: 'Affiche les tâches complètes ou incomplètes pour un utilisateur',
+                operationId: 'trouverTaches',
+                parameters: [
+                    {
+                        name: 'complete',
+                        in: 'query',
+                        description: '0 pour les tâches incomplètes, 1 pour les tâches complètes',
+                        required: false,
+                        schema: {
+                            type: 'integer',
+                            enum: [0, 1]
+                        }
+                    }
+                ],
+                responses: {
+                    '200': {
+                        description: 'Tâches récupérées avec succès'
+                    },
+                    '400': {
+                        description: 'Erreur lors de la récupération des tâches',
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    type: 'object',
+                                    properties: {
+                                        error: {
+                                            type: 'string',
+                                            description: 'Message d\'erreur personnalisé'
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    '500': {
+                        description: 'Une erreur système est survenue, veuillez reéssayer plus tard.'
+                    }
+                }
+            }
+        },
+        '/taches/details': {
+            post: {
+                tags: ['Tâches'],
+                summary: 'Affiche les détails d\'une tâche pour un utilisateur',
+                operationId: 'trouverDetailsTache',
+                parameters: [
+                    {
+                        name: 'id',
+                        in: 'query',
+                        description: 'Entrez l\'ID de la tâche à afficher',
+                        required: true,
+                        schema: {
+                            type: 'integer'
+                        }
+                    }
+                ],
+                responses: {
+                    '200': {
+                        description: 'Détails de la tâche récupérés avec succès'
+                    },
+                    '400': {
+                        description: 'Erreur lors de la récupération des détails de la tâche'
+                    },
+                    '500': {
+                        description: 'Une erreur système est survenue, veuillez reéssayer plus tard.'
+                    }
+                }
+            }
+        },
+        '/taches/ajouter': {
+            post: {
+                tags: ['Tâches'],
+                summary: 'Ajoute une tâche pour un utilisateur',
+                operationId: 'ajouterTache',
+                requestBody: {
+                    required: true,
+                    content: {
+                        'application/json': {
+                            schema: {
+                                type: 'object',
+                                properties: {
+                                    titre: {
+                                        type: 'string',
+                                        description: 'Entrez le titre de la tâche à ajouter',
+                                        default: 'Nouvelle tâche'
+                                    },
+                                    description: {
+                                        type: 'string',
+                                        description: 'Entrez la description de la tâche à ajouter',
+                                        default: 'Description de la nouvelle tâche'
+                                    },
+                                    date_debut: {
+                                        type: 'string',
+                                        description: 'Entrez la date de début de la tâche à ajouter',
+                                        default: '2024-05-04'
+                                    },
+                                    date_echeance: {
+                                        type: 'string',
+                                        description: 'Entrez la date d\'échéance de la tâche à ajouter',
+                                        default: '2024-05-10'
+                                    },
+                                }
+                            }
+                        }
+                    }
+                },
+                responses: {
+                    '200': {
+                        description: 'Tâche ajoutée avec succès'
+                    },
+                    '400': {
+                        description: 'Erreur lors de l\'ajout de la tâche'
+                    },
+                    '500': {
+                        description: 'Une erreur système est survenue, veuillez reéssayer plus tard.'
+                    }
+                }
+            }
+        },
+        '/taches/modifier': {
+            post: {
+                tags: ['Tâches'],
+                summary: 'Modifie une tâche',
+                operationId: 'modifierTache',
+                responses: {
+                    '200': {
+                        description: 'Tâche modifiée avec succès'
+                    },
+                    '400': {
+                        description: 'Erreur lors de la modification de la tâche'
+                    },
+                    '500': {
+                        description: 'Une erreur système est survenue, veuillez reéssayer plus tard.'
+                    }
+                }
+            }
+        },
+        '/taches/modifier/status': {
+            post: {
+                tags: ['Tâches'],
+                summary: 'Modifie le status d\'une tâche pour un utilisateur',
+                operationId: 'modifierStatusTache',
+                responses: {
+                    '200': {
+                        description: 'Status de la tâche modifié avec succès'
+                    },
+                    '400': {
+                        description: 'Erreur lors de la modification du status de la tâche'
+                    },
+                    '500': {
+                        description: 'Une erreur système est survenue, veuillez reéssayer plus tard.'
+                    }
+                }
+            }
+        },
+        '/taches/supprimer': {
+            post: {
+                tags: ['Tâches'],
+                summary: 'Supprime une tâche',
+                operationId: 'supprimerTache',
+                responses: {
+                    '200': {
+                        description: 'Tâche supprimée avec succès'
+                    },
+                    '400': {
+                        description: 'Erreur lors de la suppression de la tâche'
+                    },
+                    '500': {
+                        description: 'Une erreur système est survenue, veuillez reéssayer plus tard.'
+                    }
+                }
+            }
+        }
+    }
 };
 
 module.exports = documentation;

@@ -8,10 +8,13 @@ class TacheController {
      * Affiche toute les tâches pour un utilisateur
      */
     static async trouverTaches(req, res) {
-        const { complete } = req.body;
+        const { complete } = req.query;
         const cleApi = req.headers?.authorization.split(' ')[1];
 
-        Utilisateur.validationCle(cleApi);
+        if (!Utilisateur.validationCle(cleApi)) {
+            throw new HttpError("Aucune clé API n'a été passée.", 400);
+        }
+
         const taches = await Tache.trouverTout(cleApi, complete === '1');
 
         res.status(200).json(taches);
@@ -21,7 +24,12 @@ class TacheController {
      * Affiche les détails d'une tâche ainsi que ses sous-tâches pour un utilisateur
      */
     static async trouverDetailsTache(req, res) {
-        const { id } = req.body;
+        const { id } = req.query;
+        const cleApi = req.headers?.authorization.split(' ')[1];
+
+        if (!Utilisateur.validationCle(cleApi)) {
+            throw new HttpError("Aucune clé API n'a été passée.", 400);
+        }
 
         if (id === undefined) {
             throw new HttpError("Vous devez spécifier un paramètre 'id' afin de trouver la tâche.", 400)
@@ -32,6 +40,11 @@ class TacheController {
         }
 
         const tache = await Tache.trouverParID(cleApi, Number(id));
+
+        if (tache.length === 0) {
+            throw new HttpError("Aucune tâche n'a été trouvée.", 404)
+        }
+
         res.status(200).json({
             ...tache[0],
             sousTaches: await SousTache.trouverParTacheID(id)
@@ -43,6 +56,7 @@ class TacheController {
      */
     static async ajouterTache(req, res) {
         const { titre, description, date_debut, date_echeance } = req.body;
+        console.log(req.body)
         const cleApi = req.headers?.authorization.split(' ')[1];
 
         if (!Utilisateur.validationCle(cleApi)) {
@@ -50,11 +64,6 @@ class TacheController {
         }
 
         let errors = [];
-
-        // ID
-        if (id === undefined || isNaN(Number(id))) {
-            errors.push("Vous devez spécifier un paramètre 'id' valide afin de trouver la tâche à modifier. (ex: 1, 3, 123)");
-        }
 
         // Titre
         if (titre === undefined || titre.length === 0) {
@@ -80,7 +89,7 @@ class TacheController {
             throw new HttpError(errors.join("\n"), 400);
         }
 
-        const tache = await Tache.modifier(cleApi, Number(id), titre, description, date_debut, date_echeance);
+        const tache = await Tache.ajouter(cleApi, Number(id), titre, description, date_debut, date_echeance);
         res.status(200).json(tache);
     }
 
