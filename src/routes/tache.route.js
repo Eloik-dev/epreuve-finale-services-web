@@ -17,6 +17,13 @@ router.post('/details', (req, res) => {
 });
 
 /**
+ * Route pour ajouter une tâche pour un utilisateur
+ */
+router.post('/ajouter', (req, res) => {
+    TacheController.ajouterTache(req, res);
+});
+
+/**
  * Route pour modifier une tâche
  */
 router.post('/modifier', (req, res) => {

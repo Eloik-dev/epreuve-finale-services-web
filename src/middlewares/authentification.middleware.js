@@ -14,7 +14,6 @@ const authentification = (req, res, next) => {
 
         next();
     } catch (erreur) {
-        console.log("WOREORJO")
         if (erreur instanceof HttpError) {
             res.status(erreur.code).send(erreur.message);
         } else {

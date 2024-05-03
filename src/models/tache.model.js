@@ -29,6 +29,30 @@ class Tache {
         });
     }
 
+    // Ajoute une tâche pour un utilisateur
+    static ajouter(cleApi = "", titre, description, date_debut, date_echeance) {
+        return new Promise((resolve) => {
+            const requete = `
+            INSERT INTO taches (utilisateur_id, titre, description, date_debut, date_echeance) VALUES (
+                $1::int,
+                $2::text,
+                $3::text,
+                $4::text,
+                $5::text
+            ) RETURNING *;`;
+
+            const parametres = [cleApi, titre, description, date_debut, date_echeance];
+
+            sql.query(requete, parametres, (erreur, resultat) => {
+                if (erreur) {
+                    throw new Error(`Erreur sqlState ${erreur.code} : ${erreur.message}`);
+                }
+
+                resolve(resultat.rows);
+            });
+        });
+    }
+
     // Modifie une tâche grâce à son ID et clé d'API
     static modifier(cleApi = "", tache_id = -1, changements = {}) {
         return new Promise((resolve) => {
@@ -96,7 +120,7 @@ class Tache {
                     throw new Error(`Erreur sqlState ${erreur.code} : ${erreur.message}`);
                 }
 
-                resolve(resultat.rows);
+                resolve(resultat);
             });
         });
     }
