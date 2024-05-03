@@ -12,15 +12,29 @@ router.get('/afficher', (req, res) => {
 /**
  * Route pour l'affichage des détails d'une tâche pour un utilisateur
  */
-router.get('/details', (req, res) => {
+router.post('/details', (req, res) => {
     TacheController.trouverDetailsTache(req, res);
+});
+
+/**
+ * Route pour modifier une tâche
+ */
+router.post('/modifier', (req, res) => {
+    TacheController.modifierTache(req, res);
 });
 
 /**
  * Route pour modifier le status d'une tâche pour un utilisateur
  */
-router.get('/modifier/status', (req, res) => {
+router.post('/modifier/status', (req, res) => {
     TacheController.modifierStatusTache(req, res);
+});
+
+/**
+ * Route pour supprimer une tâche
+ */
+router.post('/supprimer', (req, res) => {
+    TacheController.supprimer(req, res);
 });
 
 module.exports = router;

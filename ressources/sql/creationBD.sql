@@ -32,7 +32,7 @@ CREATE TABLE sous_taches (
     tache_id INTEGER,
     titre VARCHAR(100),
     complete BOOLEAN DEFAULT FALSE,
-    FOREIGN KEY (tache_id) REFERENCES taches(id)
+    FOREIGN KEY (tache_id) REFERENCES taches(id) ON DELETE CASCADE
 );
 
 -- Ajout de valeurs par défaut

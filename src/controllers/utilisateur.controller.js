@@ -8,7 +8,7 @@ class UtilisateurController {
     static async creerUtilisateur(req, res) {
         const { courriel, password } = req.body;
 
-         if (courriel === undefined || courriel.length == 0) {
+        if (courriel === undefined || courriel.length == 0) {
             throw new HttpError("Vous devez spécifier un paramètre 'courriel' pour le nouveau utilisateur.", 400)
         }
 

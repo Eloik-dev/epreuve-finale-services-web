@@ -4,7 +4,7 @@ const authentification = require('./src/middlewares/authentification.middleware'
 require('dotenv').config();
 
 const swaggerUi = require('swagger-ui-express');
-const swaggerDocument = require('./src/config/documentation.json');
+const documentation = require('./src/config/documentation');
 
 const swaggerOptions = {
     customCss: '.swagger-ui .topbar { display: none }',
@@ -20,6 +20,6 @@ app.use('/taches', authentification);
 
 app.use('/taches', require('./src/routes/tache.route'));
 app.use('/utilisateur', require('./src/routes/utilisateur.route'));
-app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, swaggerOptions));
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(documentation, swaggerOptions));
 
 app.listen(PORT, () => console.log(`Listening on ${PORT}...`));

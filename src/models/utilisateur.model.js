@@ -17,13 +17,28 @@ class Utilisateur {
      * Vérifie qu'une clé API est valide
      */
     static validationCle(cleApi = "") {
-        if (!cleApi || cleApi.length == 0) {
-            return false;
-        }
+        return new Promise(async (resolve) => {
+            if (!cleApi || cleApi.length == 0) {
+                resolve(false);
+            }
 
-        // Validation dans la BD
+            const requete = `SELECT COUNT(*) FROM utilisateur WHERE cle_api = $1::text;`;
+            const parametres = [cleApi];
 
-        return true;
+            sql.query(requete, parametres, (erreur, resultat) => {
+                if (erreur) {
+                    throw new Error(`Erreur sqlState ${erreur.code} : ${erreur.message}`);
+                }
+
+                const occurences = Number(resultat.rows.count);
+
+                if (!isNaN(occurences) && occurences > 0) {
+                    resolve(true);
+                }
+
+                resolve(false);
+            });
+        });
     }
 
     /**
@@ -62,9 +77,18 @@ class Utilisateur {
         return await bcrypt.hash(password, salt);
     }
 
+    /**
+     * Génère une clé API d'une longueur de 30 caractères
+     */
     static genererCleApi() {
-        let uuid = uuidv4().replace(/-/g, '');
-        return uuid.substring(0, 30);
+        let cle_api;
+
+        do {
+            cle_api = uuidv4().replace(/-/g, '').substring(0, 30);
+        }
+        while (!this.validationCle(cle_api))
+
+        return cle_api;
     }
 
     /**

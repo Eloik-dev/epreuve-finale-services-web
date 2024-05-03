@@ -29,6 +29,34 @@ class Tache {
         });
     }
 
+    // Modifie une tâche grâce à son ID et clé d'API
+    static modifier(cleApi = "", tache_id = -1, changements = {}) {
+        return new Promise((resolve) => {
+            let setQuery = Object.keys(changements).map((key, index) => `${key} = $${index + 1}`).join(", ");
+            const count_changements = Object.keys(changements).length;
+
+            const requete = `
+            UPDATE taches t
+                SET ${setQuery}
+                WHERE id IN (
+                    SELECT t.id 
+                    FROM utilisateur u 
+                    WHERE u.cle_api = $${count_changements + 1}::text
+                ) AND id = $${count_changements + 2}::int
+                RETURNING *;
+                `;
+            const parametres = [...Object.values(changements), cleApi, tache_id];
+
+            sql.query(requete, parametres, (erreur, resultat) => {
+                if (erreur) {
+                    throw new Error(`Erreur sqlState ${erreur.code} : ${erreur.message}`);
+                }
+
+                resolve(resultat.rows);
+            });
+        });
+    }
+
     // Modifie le status d'une tâche grâce à son ID et clé d'API
     static modifierStatus(cleApi = "", tache_id = -1, complete = false) {
         return new Promise((resolve) => {
@@ -43,6 +71,25 @@ class Tache {
                 RETURNING *;
             `;
             const parametres = [complete, cleApi, tache_id];
+
+            sql.query(requete, parametres, (erreur, resultat) => {
+                if (erreur) {
+                    throw new Error(`Erreur sqlState ${erreur.code} : ${erreur.message}`);
+                }
+
+                resolve(resultat.rows);
+            });
+        });
+    }
+
+    // Supprimer une tâche pour l'utilisateur
+    static supprimer(cleApi = "", tache_id = -1) {
+        return new Promise((resolve) => {
+            const requete = `
+            DELETE FROM taches 
+                USING utilisateur 
+                WHERE taches.id = $1::int AND utilisateur.cle_api = $2::text;`;
+            const parametres = [tache_id, cleApi];
 
             sql.query(requete, parametres, (erreur, resultat) => {
                 if (erreur) {
