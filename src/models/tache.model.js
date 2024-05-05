@@ -48,8 +48,8 @@ class Tache {
                         $1::int,
                         $2::text,
                         $3::text,
-                        $4::text,
-                        $5::text
+                        $4::date,
+                        $5::date
                     ) RETURNING *;`;
                     const parametres = [utilisateur_id, titre, description, date_debut, date_echeance];
 

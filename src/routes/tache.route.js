@@ -16,7 +16,7 @@ router.get('/afficher', async (req, res, next) => {
 /**
  * Route pour l'affichage des détails d'une tâche pour un utilisateur
  */
-router.post('/details', async (req, res, next) => {
+router.get('/details', async (req, res, next) => {
     try {
         await TacheController.trouverDetailsTache(req, res);
     } catch (erreur) {
@@ -38,7 +38,7 @@ router.post('/ajouter', async (req, res, next) => {
 /**
  * Route pour modifier une tâche
  */
-router.post('/modifier', async (req, res, next) => {
+router.put('/modifier', async (req, res, next) => {
     try {
         await TacheController.modifierTache(req, res);
     } catch (erreur) {
@@ -49,7 +49,7 @@ router.post('/modifier', async (req, res, next) => {
 /**
  * Route pour modifier le status d'une tâche pour un utilisateur
  */
-router.post('/modifier/status', async (req, res, next) => {
+router.put('/modifier/status', async (req, res, next) => {
     try {
         await TacheController.modifierStatusTache(req, res);
     } catch (erreur) {
@@ -60,7 +60,7 @@ router.post('/modifier/status', async (req, res, next) => {
 /**
  * Route pour supprimer une tâche
  */
-router.post('/supprimer', async (req, res, next) => {
+router.delete('/supprimer', async (req, res, next) => {
     try {
         await TacheController.supprimer(req, res);
     } catch (erreur) {

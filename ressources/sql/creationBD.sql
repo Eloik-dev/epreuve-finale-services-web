@@ -29,7 +29,7 @@ CREATE TABLE taches (
 -- Création table sous_taches
 CREATE TABLE sous_taches (
     id SERIAL PRIMARY KEY,
-    tache_id INTEGER,
+    tache_id INTEGER
     titre VARCHAR(100),
     complete BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (tache_id) REFERENCES taches(id) ON DELETE CASCADE

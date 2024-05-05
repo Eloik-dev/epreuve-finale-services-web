@@ -12,16 +12,14 @@ class SousTache {
     // Trouve toutes les sous-tâches avec la clé API
     static trouverParTacheID(tache_id = -1) {
         return new Promise((resolve) => {
-            const requete = `SELECT st.* FROM sous_taches st INNER JOIN taches t ON st.tache_id = $1::int;`;
+            const requete = `SELECT st.* FROM sous_taches st INNER JOIN taches t ON t.id = $1::int;`;
             const parametres = [tache_id];
-            console.log(tache_id)
 
             sql.query(requete, parametres, (erreur, resultat) => {
                 if (erreur) {
                     throw new HttpError(`Erreur sqlState ${erreur.code} : ${erreur.message}`, erreur.code);
                 }
 
-                console.log(resultat.rows)
                 resolve(resultat.rows);
             });
         });

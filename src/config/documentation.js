@@ -84,7 +84,7 @@ const documentation = {
             }
         },
         '/taches/details': {
-            post: {
+            get: {
                 tags: ['Tâches'],
                 summary: 'Affiche les détails d\'une tâche pour un utilisateur',
                 operationId: 'trouverDetailsTache',
@@ -163,7 +163,7 @@ const documentation = {
             }
         },
         '/taches/modifier': {
-            post: {
+            put: {
                 tags: ['Tâches'],
                 summary: 'Modifie une tâche',
                 operationId: 'modifierTache',
@@ -181,7 +181,7 @@ const documentation = {
             }
         },
         '/taches/modifier/status': {
-            post: {
+            put: {
                 tags: ['Tâches'],
                 summary: 'Modifie le status d\'une tâche pour un utilisateur',
                 operationId: 'modifierStatusTache',
@@ -199,7 +199,7 @@ const documentation = {
             }
         },
         '/taches/supprimer': {
-            post: {
+            delete: {
                 tags: ['Tâches'],
                 summary: 'Supprime une tâche',
                 operationId: 'supprimerTache',

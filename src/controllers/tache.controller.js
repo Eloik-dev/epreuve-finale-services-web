@@ -56,7 +56,6 @@ class TacheController {
      */
     static async ajouterTache(req, res) {
         const { titre, description, date_debut, date_echeance } = req.body;
-        console.log(req.body)
         const cleApi = req.headers?.authorization.split(' ')[1];
 
         if (!Utilisateur.validationCle(cleApi)) {
@@ -89,7 +88,7 @@ class TacheController {
             throw new HttpError(errors.join("\n"), 400);
         }
 
-        const tache = await Tache.ajouter(cleApi, Number(id), titre, description, date_debut, date_echeance);
+        const tache = await Tache.ajouter(cleApi, titre, description, date_debut, date_echeance);
         res.status(200).json(tache);
     }
 
