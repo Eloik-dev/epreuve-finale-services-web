@@ -37,9 +37,56 @@ const documentation = {
         {
             name: 'Tâches',
             description: 'Opérations liées aux tâches'
+        },
+        {
+            name: 'Sous-Tâches',
+            description: 'Opérations liées aux sous-tâches'
         }
     ],
     paths: {
+        '/utilisateur/creer': {
+            get: {
+                tags: ['Utilisateurs'],
+                summary: 'Créer un utilisateur avec un courriel et un mot de passe. Retourne une clé pour accéder à l\'API',
+                operationId: 'creerUtilisateur',
+                parameters: [
+                    {
+                        name: 'courriel',
+                        in: 'query',
+                        description: 'Un courriel dans un format valide',
+                        required: true,
+                        schema: {
+                            type: 'string',
+                            default: 'email@example.com'
+                        }
+                    }
+                ],
+                responses: {
+                    '200': {
+                        description: 'Compte crée ave succès'
+                    },
+                    '400': {
+                        description: 'Erreur lors de la création de l\'utilisateur',
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    type: 'object',
+                                    properties: {
+                                        error: {
+                                            type: 'string',
+                                            description: 'Message d\'erreur personnalisé'
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    '500': {
+                        description: 'Une erreur système est survenue, veuillez reéssayer plus tard.'
+                    }
+                }
+            }
+        },
         '/taches/afficher': {
             get: {
                 tags: ['Tâches'],
@@ -199,6 +246,24 @@ const documentation = {
             }
         },
         '/taches/supprimer': {
+            delete: {
+                tags: ['Tâches'],
+                summary: 'Supprime une tâche',
+                operationId: 'supprimerTache',
+                responses: {
+                    '200': {
+                        description: 'Tâche supprimée avec succès'
+                    },
+                    '400': {
+                        description: 'Erreur lors de la suppression de la tâche'
+                    },
+                    '500': {
+                        description: 'Une erreur système est survenue, veuillez reéssayer plus tard.'
+                    }
+                }
+            }
+        },
+        '/soustaches/supprimer': {
             delete: {
                 tags: ['Tâches'],
                 summary: 'Supprime une tâche',

@@ -72,7 +72,7 @@ class TacheController {
         // Description
         if (description === undefined || description.length === 0) {
             errors.push("Vous devez spécifier un paramètre 'description' valide comme nouvelle description de la tâche.");
-        }
+        } 
 
         // Date début
         if (date_debut === undefined || isNaN(new Date(date_debut))) {
