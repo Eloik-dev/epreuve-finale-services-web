@@ -4,7 +4,7 @@ const HttpError = require("../utils/HttpError");
 /**
  * Vérifie la clé API de l'utilisateur
  */
-const authentification = (req, res, next) => {
+const authentification = async (req, res, next) => {
     try {
         const authorization = req?.headers.authorization;
 
@@ -14,7 +14,7 @@ const authentification = (req, res, next) => {
 
         const cle_api = authorization.split(' ')[1];
 
-        if (!Utilisateur.validationCle(cle_api)) {
+        if (!await Utilisateur.validationCle(cle_api)) {
             throw new HttpError(`La clé d'API n'existe pas ou est invalide. (${cle_api})`, 401);
         }
 

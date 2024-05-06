@@ -4,7 +4,8 @@
   "description": "Épreuve finale pour le cours de services web",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "sass": "sass --watch src/web/scss:src/web/css"
   },
   "author": "",
   "license": "ISC",
@@ -14,8 +15,11 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "expressjs": "^1.0.1",
+    "fs": "^0.0.1-security",
+    "morgan": "^1.10.0",
     "nodemon": "^3.1.0",
     "pg": "^8.11.5",
+    "sass": "^1.76.0",
     "swagger-ui-express": "^5.0.0",
     "uuid": "^9.0.1"
   }

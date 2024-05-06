@@ -1,9 +1,12 @@
 const bcrypt = require('bcrypt');
 const { v4: uuidv4 } = require('uuid');
 const sql = require("../config/db_pg.js");
+const HttpError = require('../utils/HttpError.js');
 const costFactor = 10;
 
 class Utilisateur {
+    static nom_table = "utilisateur";
+
     constructor(utilisateur) {
         this.id = utilisateur.id;
         this.nom = utilisateur.nom;
@@ -17,23 +20,20 @@ class Utilisateur {
      * Vérifie qu'une clé API est valide
      */
     static validationCle(cleApi = "") {
-        return new Promise(async (resolve) => {
+        return new Promise(async (resolve, reject) => {
             if (!cleApi || cleApi.length == 0) {
-                resolve(false);
+                return resolve(false);
             }
 
-            const requete = `SELECT COUNT(*) FROM utilisateur WHERE cle_api = $1::text;`;
+            const requete = `SELECT * FROM ${this.nom_table} WHERE cle_api = $1::text;`;
             const parametres = [cleApi];
 
             sql.query(requete, parametres, (erreur, resultat) => {
                 if (erreur) {
-                    throw new Error(`Erreur sqlState ${erreur.code} : ${erreur.message}`);
+                    return reject(new Error(`Erreur sqlState ${erreur.code} : ${erreur.message}`));
                 }
-
-                const occurences = Number(resultat.rows.count);
-
-                if (!isNaN(occurences) && occurences > 0) {
-                    resolve(true);
+                if (resultat.rowCount > 0) {
+                    return resolve(true);
                 }
 
                 resolve(false);
@@ -42,26 +42,36 @@ class Utilisateur {
     }
 
     /**
-     * Vérifie qu'un courriel est d'un format valide et n'existe pas déjà
+     * Vérifie qu'un courriel est d'un format valide
      */
-    static async validationCourriel(courriel = "") {
-        return new Promise(async (resolve) => {
-            sql.query(`SELECT COUNT(*) FROM utilisateur WHERE courriel = $1::text;`, [courriel], (erreur, resultat) => {
+    static async estFormatCourrielValide(courriel = "") {
+        if (!String(courriel)
+            .toLowerCase()
+            .match(
+                /[^@]+@[^@]+\.[a-zA-Z]{2,6}$/
+            )) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Vérifie qu'un courriel est valide et n'existe pas déjà
+     */
+    static async validerCourriel(courriel = "") {
+        return new Promise((resolve, reject) => {
+            if (!this.estFormatCourrielValide(courriel)) {
+                return new HttpError("Le courriel n'est pas d'un format valide.", 400);
+            }
+
+            sql.query(`SELECT * FROM ${this.nom_table} WHERE courriel = $1::text;`, [courriel], (erreur, resultat) => {
                 if (erreur) {
-                    throw new Error(`Erreur sqlState ${erreur.code} : ${erreur.message}`);
+                    return reject(new Error(`Erreur sqlState ${erreur.code} : ${erreur.message}`));
                 }
 
-                const occurences = Number(resultat.rows.count);
-                if (!isNaN(occurences) && occurences > 0) {
-                    resolve(false);
-                }
-
-                if (String(courriel)
-                    .toLowerCase()
-                    .match(
-                        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-                    )) {
-                    resolve(false);
+                if (resultat.rowCount > 0) {
+                    return reject(new HttpError("Ce courriel est déjà utilisé.", 400));
                 }
 
                 resolve(true);
@@ -92,18 +102,66 @@ class Utilisateur {
     }
 
     /**
-     * Créer un nouvel utilisateur en 
+     * Créer un nouvel utilisateur
      */
     static creerUtilisateur(courriel = "", password = "") {
-        return new Promise(async (resolve) => {
-            const requete = `INSERT INTO utilisateur (courriel, password, cle_api) VALUES ($1::text, $2::text, $3::text);`;
+        return new Promise(async (resolve, reject) => {
+            const requete = `INSERT INTO ${this.nom_table} (courriel, password, cle_api) VALUES ($1::text, $2::text, $3::text);`;
             const cle_api = this.genererCleApi();
             const hash = await this.creerHashPassword(password);
             const parametres = [courriel, hash, cle_api];
 
             sql.query(requete, parametres, (erreur) => {
                 if (erreur) {
-                    throw new Error(`Erreur sqlState ${erreur.code} : ${erreur.message}`);
+                    return reject(new Error(`Erreur sqlState ${erreur.code} : ${erreur.message}`));
+                }
+
+                resolve(cle_api);
+            });
+        });
+    }
+
+    /**
+     * Vérifie qu'un hash est valide avec la base de données
+     */
+    static async validerHash(courriel = "", password = "") {
+        return new Promise((resolve, reject) => {
+            sql.query(`SELECT password FROM ${this.nom_table} WHERE courriel = $1::text;`, [courriel], async (erreur, resultat) => {
+                if (erreur) {
+                    return reject(new Error(`Erreur sqlState ${erreur.code} : ${erreur.message}`));
+                }
+
+                if (resultat.rowCount === 0) {
+                    return reject(new HttpError("L'utilisateur n'a pas été trouvé.", 404));
+                }
+
+                const hash = resultat.rows[0]?.password;
+
+                if (hash && !await bcrypt.compare(password, hash)) {
+                    return reject(new HttpError("Le mot de passe est invalide.", 401))
+                }
+
+                resolve(true);
+            });
+        });
+    }
+
+    /**
+     * Modifie la clé API d'un utilisateur
+     */
+    static async modifierCleApiUtilisateur(courriel = "", password = "") {
+        return new Promise(async (resolve, reject) => {
+            await this.validerHash(courriel, password).catch((erreur) => {
+                reject(erreur);
+            });
+    
+            const requete = `UPDATE ${this.nom_table} SET cle_api = $1::text WHERE courriel = $2::text;`;
+            const cle_api = this.genererCleApi();
+            const parametres = [cle_api, courriel];
+
+            sql.query(requete, parametres, (erreur) => {
+                if (erreur) {
+                    return reject(new Error(`Erreur sqlState ${erreur.code} : ${erreur.message}`));
                 }
 
                 resolve(cle_api);

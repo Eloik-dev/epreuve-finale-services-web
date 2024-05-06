@@ -1,8 +1,8 @@
 DROP DATABASE IF EXISTS epreuve_finale;
 DROP TABLE IF EXISTS utilisateur CASCADE;
-DROP TABLE IF EXISTS taches CASCADE;
-DROP TABLE IF EXISTS sous_taches CASCADE;
-CREATE DATABASE epreuve_finale;
+DROP TABLE IF EXISTS tache CASCADE;
+DROP TABLE IF EXISTS sous_tache CASCADE;
+CREATE DATABASE epreuve_finale WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'fr_CA.utf8' LC_CTYPE = 'fr_CA.utf8';
 
 -- Création table utilisateur
 CREATE TABLE utilisateur (
@@ -14,8 +14,8 @@ CREATE TABLE utilisateur (
     password VARCHAR(100)
 );
 
--- Création table taches
-CREATE TABLE taches (
+-- Création table tache
+CREATE TABLE tache (
     id SERIAL PRIMARY KEY,
     utilisateur_id INTEGER,
     titre VARCHAR(100),
@@ -23,16 +23,16 @@ CREATE TABLE taches (
     date_debut DATE,
     date_echeance DATE,
     complete BOOLEAN DEFAULT FALSE,
-    FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id)
+    FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id) ON DELETE CASCADE
 );
 
--- Création table sous_taches
-CREATE TABLE sous_taches (
+-- Création table sous_tache
+CREATE TABLE sous_tache (
     id SERIAL PRIMARY KEY,
     tache_id INTEGER,
     titre VARCHAR(100),
     complete BOOLEAN DEFAULT FALSE,
-    FOREIGN KEY (tache_id) REFERENCES taches(id) ON DELETE CASCADE
+    FOREIGN KEY (tache_id) REFERENCES tache(id) ON DELETE CASCADE
 );
 
 -- Ajout de valeurs par défaut
@@ -45,7 +45,7 @@ INSERT INTO utilisateur (nom, prenom, courriel, cle_api, password) VALUES (
 );
 
 -- Ajout de taches par défaut
-INSERT INTO taches (utilisateur_id, titre, description, date_debut, date_echeance) VALUES (
+INSERT INTO tache (utilisateur_id, titre, description, date_debut, date_echeance) VALUES (
     currval('utilisateur_id_seq'),
     'Meeting cool',
     'Il faut démontrer X pour faire Y, sinon Z sera pas content!',
@@ -54,7 +54,7 @@ INSERT INTO taches (utilisateur_id, titre, description, date_debut, date_echeanc
 );
 
 -- Ajout de sous-taches par défaut
-INSERT INTO sous_taches (tache_id, titre) VALUES 
-    (currval('taches_id_seq'), 'Première tâche à faire'),
-    (currval('taches_id_seq'), 'Deuxième tâche à faire'),
-    (currval('taches_id_seq'), 'Troisième tâche à faire');
+INSERT INTO sous_tache (tache_id, titre) VALUES 
+    (currval('tache_id_seq'), 'Première tâche à faire'),
+    (currval('tache_id_seq'), 'Deuxième tâche à faire'),
+    (currval('tache_id_seq'), 'Troisième tâche à faire');

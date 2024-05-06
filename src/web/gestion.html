@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur de clé</title>
+    <script src="js/gestion.js"></script>
+    <link rel="stylesheet" href="css/gestion.css">
+</head>
+
+<body>
+    <main>
+        <form id="formulaire-utilisateur" onsubmit="return contacterAPI(event)">
+            <h2>Générateur de clé</h2>
+            <div id="champs-container">
+                <div class="input-container">
+                    <label for="courriel">Courriel :</label>
+                    <input type="email" name="courriel" id="courriel-input" type="text" required
+                        pattern="[^@]+@[^@]+\.[a-zA-Z]{2,6}">
+                </div>
+                <div class="input-container">
+                    <label for="password">Mot de passe :</label>
+                    <input name="password" id="password-input" type="password" required>
+                </div>
+            </div>
+            <div id="boutons-container">
+                <button type="submit" data-action="creer">Créer un compte</button>
+                <hr>
+                <button type="submit" data-action="generer">Générer une nouvelle clé API</button>
+            </div>
+            <div id="cle-api-container">
+                <span>Votre clé d'accès :</span>
+                <span id="cle-api">Créez un compte ou générez une clé</span>
+            </div>
+        </form>
+    </main>
+</body>
+
+</html>

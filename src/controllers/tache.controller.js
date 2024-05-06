@@ -1,6 +1,5 @@
 const SousTache = require("../models/sous-tache.model.js");
 const Tache = require("../models/tache.model.js");
-const Utilisateur = require("../models/utilisateur.model.js");
 const HttpError = require("../utils/HttpError.js");
 
 class TacheController {
@@ -10,10 +9,6 @@ class TacheController {
     static async trouverTaches(req, res) {
         const { complete } = req.query;
         const cleApi = req.headers?.authorization.split(' ')[1];
-
-        if (!Utilisateur.validationCle(cleApi)) {
-            throw new HttpError("Aucune clé API n'a été passée.", 400);
-        }
 
         const taches = await Tache.trouverTout(cleApi, complete === '1');
 
@@ -27,16 +22,8 @@ class TacheController {
         const { id } = req.query;
         const cleApi = req.headers?.authorization.split(' ')[1];
 
-        if (!Utilisateur.validationCle(cleApi)) {
-            throw new HttpError("Aucune clé API n'a été passée.", 400);
-        }
-
-        if (id === undefined) {
-            throw new HttpError("Vous devez spécifier un paramètre 'id' afin de trouver la tâche.", 400)
-        }
-
-        if (isNaN(Number(id))) {
-            throw new HttpError("L'id de la tâche doit être un nombre (ex: 1, 3, 123).", 400)
+        if (id === undefined || isNaN(Number(id))) {
+            throw new HttpError("Vous devez spécifier un paramètre 'id' valide afin de trouver la tâche à modifier (ex: 1, 3, 123).", 400)
         }
 
         const tache = await Tache.trouverParID(cleApi, Number(id));
@@ -55,12 +42,8 @@ class TacheController {
      * Ajoute une tâche pour un utilisateur
      */
     static async ajouterTache(req, res) {
-        const { titre, description, date_debut, date_echeance } = req.body;
+        const { titre, description, date_debut, date_echeance } = req.query;
         const cleApi = req.headers?.authorization.split(' ')[1];
-
-        if (!Utilisateur.validationCle(cleApi)) {
-            throw new HttpError("Aucune clé API n'a été passée.", 400);
-        }
 
         let errors = [];
 
@@ -72,7 +55,7 @@ class TacheController {
         // Description
         if (description === undefined || description.length === 0) {
             errors.push("Vous devez spécifier un paramètre 'description' valide comme nouvelle description de la tâche.");
-        } 
+        }
 
         // Date début
         if (date_debut === undefined || isNaN(new Date(date_debut))) {
@@ -96,22 +79,16 @@ class TacheController {
      * Modifie le status d'une tâche pour un utilisateur
      */
     static async modifierTache(req, res) {
-        const { id, titre, description, date_debut, date_echeance, complete } = req.body;
+        const { id, titre, description, date_debut, date_echeance, complete } = req.query;
         const cleApi = req.headers?.authorization.split(' ')[1];
 
         let changements = {};
-
-        if (!Utilisateur.validationCle(cleApi)) {
-            throw new HttpError("Aucune clé API n'a été passée.", 400);
-        }
 
         let errors = [];
 
         // ID
         if (id === undefined || isNaN(Number(id))) {
             errors.push("Vous devez spécifier un paramètre 'id' valide afin de trouver la tâche à modifier. (ex: 1, 3, 123)");
-        } else {
-            changements.id = id;
         }
 
         // Titre
@@ -171,19 +148,21 @@ class TacheController {
      * Modifie le status d'une tâche pour un utilisateur
      */
     static async modifierStatusTache(req, res) {
-        const { id, complete } = req.body;
+        const { id, complete } = req.query;
         const cleApi = req.headers?.authorization.split(' ')[1];
 
-        if (!Utilisateur.validationCle(cleApi)) {
-            throw new HttpError("Aucune clé API n'a été passée.", 400);
-        }
+        let errors = [];
 
         if (id === undefined || isNaN(Number(id))) {
-            throw new HttpError("Vous devez spécifier un paramètre 'id' valide afin de trouver la tâche à modifier. (ex: 1, 3, 123)", 400);
+            errors.push("Vous devez spécifier un paramètre 'id' valide afin de trouver la tâche à modifier (ex: 1, 3, 123).");
         }
 
         if (complete === undefined || isNaN(Number(complete))) {
-            throw new HttpError("Vous devez spécifier un paramètre 'complete' comme nouveau status de la tâche. (0 ou 1)", 400)
+            errors.push("Vous devez spécifier un paramètre 'complete' comme nouveau status de la tâche (0 ou 1).");
+        }
+
+        if (errors.length > 0) {
+            throw new HttpError(errors.join("\n"), 400);
         }
 
         const tache = await Tache.modifierStatus(cleApi, Number(id), complete);
@@ -194,12 +173,8 @@ class TacheController {
      * Supprime une tâche pour un utilisateur
      */
     static async supprimer(req, res) {
-        const { id } = req.body;
+        const { id } = req.query;
         const cleApi = req.headers?.authorization.split(' ')[1];
-
-        if (!Utilisateur.validationCle(cleApi)) {
-            throw new HttpError("Aucune clé API n'a été passée.", 400);
-        }
 
         if (id === undefined || isNaN(Number(id))) {
             throw new HttpError("Vous devez spécifier un paramètre 'id' valide afin de trouver la tâche à modifier. (ex: 1, 3, 123)", 400);
@@ -207,11 +182,11 @@ class TacheController {
 
         const suppression = await Tache.supprimer(cleApi, Number(id));
 
-        if (suppression.rowCount == 1) {
-            res.status(200).send("La tâche a été supprimée avec succès.");
-        } else {
-            res.status(404).send("La tâche n'a pas été trouvée.");
+        if (suppression.rowCount != 1) {
+            throw new HttpError("La tâche n'a pas été trouvée.", 404);
         }
+
+        res.status(200).send("La tâche a été supprimée avec succès.");
     }
 }
 
