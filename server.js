@@ -3,6 +3,7 @@ const express = require('express');
 const fs = require('fs');
 const morgan = require('morgan');
 const path = require('path');
+const cors = require('cors');
 const authentification = require('./src/middlewares/authentification.middleware');
 require('dotenv').config();
 
@@ -19,6 +20,7 @@ const PORT = process.env.PORT || 3000;
 
 // Paramètrage
 const app = express();
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
