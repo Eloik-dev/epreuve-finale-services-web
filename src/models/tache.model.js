@@ -148,7 +148,7 @@ class Tache {
     static trouverTout(cleApi = "", complete = false) {
         return new Promise((resolve, reject) => {
             const completeStr = complete ? 'IS TRUE' : 'IS NOT TRUE';
-            const requete = `SELECT t.id, t.titre FROM ${this.nom_table} t INNER JOIN ${Utilisateur.nom_table} u ON u.id = t.utilisateur_id WHERE u.cle_api = $1::text AND t.complete ${completeStr};`;
+            const requete = `SELECT t.id, t.titre, t.complete FROM ${this.nom_table} t INNER JOIN ${Utilisateur.nom_table} u ON u.id = t.utilisateur_id WHERE u.cle_api = $1::text AND t.complete ${completeStr};`;
             const parametres = [cleApi];
 
             sql.query(requete, parametres, (erreur, resultat) => {
