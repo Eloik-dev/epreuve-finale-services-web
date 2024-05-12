@@ -1,8 +1,6 @@
-DROP DATABASE IF EXISTS epreuve_finale;
 DROP TABLE IF EXISTS utilisateur CASCADE;
 DROP TABLE IF EXISTS tache CASCADE;
 DROP TABLE IF EXISTS sous_tache CASCADE;
-CREATE DATABASE epreuve_finale WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'fr_CA.utf8' LC_CTYPE = 'fr_CA.utf8';
 
 -- Création table utilisateur
 CREATE TABLE utilisateur (

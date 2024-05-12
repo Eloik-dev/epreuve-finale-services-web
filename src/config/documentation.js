@@ -318,68 +318,48 @@ const documentation = {
                 tags: ['Tâches'],
                 summary: 'Modifie une tâche',
                 operationId: 'modifierTache',
-                parameters: [
-                    {
-                        name: 'id',
-                        in: 'query',
-                        description: 'Entrez l\'ID de la tâche à modifier',
-                        required: true,
-                        schema: {
-                            type: 'integer'
-                        }
-                    },
-                    {
-                        name: 'titre',
-                        in: 'query',
-                        description: 'Entrez le nouveau titre de la tâche à modifier',
-                        required: false,
-                        schema: {
-                            type: 'string',
-                            default: 'Nouvelle tâche'
-                        }
-                    },
-                    {
-                        name: 'description',
-                        in: 'query',
-                        description: 'Entrez la nouvelle description de la tâche à modifier',
-                        required: false,
-                        schema: {
-                            type: 'string',
-                            default: 'Description de la nouvelle tâche'
-                        }
-                    },
-                    {
-                        name: 'date_debut',
-                        in: 'query',
-                        description: 'Entrez la nouvelle date d\'échéance de la tâche à modifier',
-                        required: false,
-                        schema: {
-                            type: 'string',
-                            default: '2024-05-04'
-                        }
-                    },
-                    {
-                        name: 'date_echeance',
-                        in: 'query',
-                        description: 'Entrez le nouveau status de la tâche à modifier',
-                        required: false,
-                        schema: {
-                            type: 'string',
-                            default: '2024-05-10'
-                        }
-                    },
-                    {
-                        name: 'complete',
-                        in: 'query',
-                        description: 'Entrez le nouveau status de la tâche à modifier',
-                        required: false,
-                        schema: {
-                            type: 'integer',
-                            default: 0,
-                            enum: [0, 1]
+                requestBody: {
+                    required: true,
+                    content: {
+                        'application/json': {
+                            schema: {
+                                type: 'object',
+                                properties: {
+                                    id: {
+                                        type: 'integer',
+                                        description: 'Entrez l\'ID de la tâche à modifier',
+                                        default: '0'
+                                    },
+                                    titre: {
+                                        type: 'string',
+                                        description: 'Entrez le nouveau titre de la tâche à modifier',
+                                        default: 'Nouvelle tâche'
+                                    },
+                                    description: {
+                                        type: 'string',
+                                        description: 'Entrez la nouvelle description de la tâche à modifier',
+                                        default: 'Description de la nouvelle tâche'
+                                    },
+                                    date_debut: {
+                                        type: 'string',
+                                        description: 'Entrez la nouvelle date d\'échéance de la tâche à modifier',
+                                        default: '2024-05-04'
+                                    },
+                                    date_echeance: {
+                                        type: 'string',
+                                        description: 'Entrez le nouveau status de la tâche à modifier',
+                                        default: '2024-05-10'
+                                    },
+                                    complete: {
+                                        type: 'integer',
+                                        description: 'Entrez le nouveau status de la tâche à modifier',
+                                        default: 0
+                                    }
+                                }
+                            }
                         }
                     }
-                ],
+                },
                 responses: {
                     '200': {
                         description: 'Tâche modifiée avec succès'
