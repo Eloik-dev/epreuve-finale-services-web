@@ -12,7 +12,11 @@ const documentation = {
     },
     servers: [
         {
-            url: process.env.HOST + process.env.PORT || 'http://localhost:3000',
+            url: `${process.env.HOST_DEV}:${process.env.PORT}` || 'http://localhost:3000',
+            description: 'Serveur hébergé'
+        },
+        {
+            url: process.env.HOST_PROD,
             description: 'Serveur local'
         }
     ],
@@ -27,7 +31,7 @@ const documentation = {
         }
     },
     security: [{
-        ApiKeyAuth: [process.env.API_KEY]
+        ApiKeyAuth: []
     }],
     tags: [
         {
