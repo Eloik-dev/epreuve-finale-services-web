@@ -7,7 +7,7 @@ class SousTacheController {
      * Ajoute une sous-tâche pour une tâche d'un utilisateur
      */
     static async ajouterSousTache(req, res) {
-        const { tache_id, titre } = req.query;
+        const { tache_id, titre } = req.body;
         const cleApi = req.headers?.authorization.split(' ')[1];
 
         let errors = [];
@@ -38,7 +38,7 @@ class SousTacheController {
      * Modifie le status d'une sous-tâche pour un utilisateur
      */
     static async modifierSousTache(req, res) {
-        const { id, titre, complete } = req.query;
+        const { id, titre, complete } = req.body;
         const cleApi = req.headers?.authorization.split(' ')[1];
 
         let changements = {};
@@ -79,7 +79,7 @@ class SousTacheController {
      * Modifie le status d'une sous-tâche pour un utilisateur
      */
     static async modifierStatusSousTache(req, res) {
-        const { id, complete } = req.query;
+        const { id, complete } = req.body;
         const cleApi = req.headers?.authorization.split(' ')[1];
 
         let errors = [];

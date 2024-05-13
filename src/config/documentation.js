@@ -471,27 +471,28 @@ const documentation = {
                 tags: ['Sous-Tâches'],
                 summary: 'Ajoute une sous-tâche pour une tâche d\'un utilisateur',
                 operationId: 'ajouterSousTache',
-                parameters: [
-                    {
-                        name: 'tache_id',
-                        in: 'query',
-                        description: 'Entrez l\'ID de la tâche pour laquelle ajouté la sous-tâche.',
-                        required: true,
-                        schema: {
-                            type: 'integer'
-                        }
-                    },
-                    {
-                        name: 'titre',
-                        in: 'query',
-                        description: 'Entrez le titre de la sous-tâche à ajouter.',
-                        required: true,
-                        schema: {
-                            type: 'string',
-                            default: 'Nouvelle sous-tâche'
+                requestBody: {
+                    required: true,
+                    content: {
+                        'application/json': {
+                            schema: {
+                                type: 'object',
+                                properties: {
+                                    tache_id: {
+                                        type: 'integer',
+                                        description: 'Entrez l\'ID de la tâche pour laquelle ajouter la sous-tâche.',
+                                        default: 0
+                                    },
+                                    titre: {
+                                        type: 'string',
+                                        description: 'Entrez le titre de la sous-tâche à ajouter.',
+                                        default: 'Nouvelle sous-tâche'
+                                    }
+                                }
+                            }
                         }
                     }
-                ],
+                },
                 responses: {
                     '200': {
                         description: 'Sous-tâche ajoutée avec succès'
@@ -523,38 +524,33 @@ const documentation = {
                 tags: ['Sous-Tâches'],
                 summary: 'Modifie une sous-tâche',
                 operationId: 'modifierSousTache',
-                parameters: [
-                    {
-                        name: 'id',
-                        in: 'query',
-                        description: 'Entrez l\'ID de la sous-tâche à modifier',
-                        required: true,
-                        schema: {
-                            type: 'integer'
-                        }
-                    },
-                    {
-                        name: 'titre',
-                        in: 'query',
-                        description: 'Entrez le nouveau titre de la sous-tâche à modifier',
-                        required: false,
-                        schema: {
-                            type: 'string',
-                            default: 'Nouvelle sous-tâche'
-                        }
-                    },
-                    {
-                        name: 'complete',
-                        in: 'query',
-                        description: 'Entrez le nouveau status de la sous-tâche à modifier',
-                        required: false,
-                        schema: {
-                            type: 'integer',
-                            default: 0,
-                            enum: [0, 1]
+                requestBody: {
+                    required: true,
+                    content: {
+                        'application/json': {
+                            schema: {
+                                type: 'object',
+                                properties: {
+                                    id: {
+                                        type: 'integer',
+                                        description: 'Entrez l\'ID de la sous-tâche à modifier.',
+                                        default: 0
+                                    },
+                                    titre: {
+                                        type: 'string',
+                                        description: 'Entrez le nouveau titre de la sous-tâche à modifier.',
+                                        default: 'Nouvelle sous-tâche'
+                                    },
+                                    complete: {
+                                        type: 'integer',
+                                        description: 'Entrez le nouveau status de la sous-tâche à modifier',
+                                        default: 0,
+                                    }
+                                }
+                            }
                         }
                     }
-                ],
+                },
                 responses: {
                     '200': {
                         description: 'Sous-tâche modifiée avec succès'
@@ -586,27 +582,28 @@ const documentation = {
                 tags: ['Sous-Tâches'],
                 summary: 'Modifie le status d\'une sous-tâche pour un utilisateur',
                 operationId: 'modifierStatusSousTache',
-                parameters: [
-                    {
-                        name: 'id',
-                        in: 'query',
-                        description: 'Entrez l\'ID de la sous-tâche à modifier',
-                        required: true,
-                        schema: {
-                            type: 'integer'
-                        }
-                    },
-                    {
-                        name: 'complete',
-                        in: 'query',
-                        description: 'Entrez le nouveau status de la sous-tâche à modifier',
-                        required: false,
-                        schema: {
-                            type: 'integer',
-                            enum: [0, 1]
+                requestBody: {
+                    required: true,
+                    content: {
+                        'application/json': {
+                            schema: {
+                                type: 'object',
+                                properties: {
+                                    id: {
+                                        type: 'integer',
+                                        description: 'Entrez l\'ID de la sous-tâche à modifier',
+                                        default: 0
+                                    },
+                                    complete: {
+                                        type: 'integer',
+                                        description: 'Entrez le nouveau status de la sous-tâche à modifier',
+                                        default: 0,
+                                    }
+                                }
+                            }
                         }
                     }
-                ],
+                },
                 responses: {
                     '200': {
                         description: 'Status de la sous-tâche modifié avec succès'
