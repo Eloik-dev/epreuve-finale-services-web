@@ -38,7 +38,7 @@ class SousTacheController {
      * Modifie le status d'une sous-tâche pour un utilisateur
      */
     static async modifierSousTache(req, res) {
-        const { id, titre, complete } = req.body;
+        const { id, titre } = req.body;
         const cleApi = req.headers?.authorization.split(' ')[1];
 
         let changements = {};
@@ -56,15 +56,6 @@ class SousTacheController {
                 errors.push("Vous devez spécifier un paramètre 'titre' valide comme nouveau titre de la sous-tâche.");
             } else {
                 changements.titre = titre;
-            }
-        }
-
-        // Complete
-        if (complete !== undefined) {
-            if (isNaN(Number(complete))) {
-                errors.push("Vous devez spécifier un paramètre 'complete' valide comme nouveau status de la sous-tâche (0 ou 1).");
-            } else {
-                changements.complete = Number(complete);
             }
         }
 

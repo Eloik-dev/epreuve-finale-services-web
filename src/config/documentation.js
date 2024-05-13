@@ -540,11 +540,6 @@ const documentation = {
                                         type: 'string',
                                         description: 'Entrez le nouveau titre de la sous-tâche à modifier.',
                                         default: 'Nouvelle sous-tâche'
-                                    },
-                                    complete: {
-                                        type: 'integer',
-                                        description: 'Entrez le nouveau status de la sous-tâche à modifier',
-                                        default: 0,
                                     }
                                 }
                             }
