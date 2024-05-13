@@ -79,7 +79,7 @@ class TacheController {
      * Modifie le status d'une tâche pour un utilisateur
      */
     static async modifierTache(req, res) {
-        const { id, titre, description, date_debut, date_echeance, complete } = req.query;
+        const { id, titre, description, date_debut, date_echeance, complete } = req.body;
         const cleApi = req.headers?.authorization.split(' ')[1];
 
         let changements = {};
@@ -148,7 +148,7 @@ class TacheController {
      * Modifie le status d'une tâche pour un utilisateur
      */
     static async modifierStatusTache(req, res) {
-        const { id, complete } = req.query;
+        const { id, complete } = req.body;
         const cleApi = req.headers?.authorization.split(' ')[1];
 
         let errors = [];
