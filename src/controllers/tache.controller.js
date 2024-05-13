@@ -42,7 +42,7 @@ class TacheController {
      * Ajoute une tâche pour un utilisateur
      */
     static async ajouterTache(req, res) {
-        const { titre, description, date_debut, date_echeance } = req.query;
+        const { titre, description, date_debut, date_echeance } = req.body;
         const cleApi = req.headers?.authorization.split(' ')[1];
 
         let errors = [];
