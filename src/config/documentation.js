@@ -245,48 +245,38 @@ const documentation = {
                 tags: ['Tâches'],
                 summary: 'Ajoute une tâche pour un utilisateur',
                 operationId: 'ajouterTache',
-                parameters: [
-                    {
-                        name: 'titre',
-                        in: 'query',
-                        description: 'Entrez le titre de la tâche à ajouter',
-                        required: true,
-                        schema: {
-                            type: 'string',
-                            default: 'Nouvelle tâche'
-                        }
-                    },
-                    {
-                        name: 'description',
-                        in: 'query',
-                        description: 'Entrez la description de la tâche à ajouter',
-                        required: true,
-                        schema: {
-                            type: 'string',
-                            default: 'Description de la nouvelle tâche'
-                        }
-                    },
-                    {
-                        name: 'date_debut',
-                        in: 'query',
-                        description: 'Entrez la date de début de la tâche à ajouter',
-                        required: true,
-                        schema: {
-                            type: 'string',
-                            default: '2024-05-04'
-                        }
-                    },
-                    {
-                        name: 'date_echeance',
-                        in: 'query',
-                        description: 'Entrez la date d\'échéance de la tâche à ajouter',
-                        required: true,
-                        schema: {
-                            type: 'string',
-                            default: '2024-05-10'
+                requestBody: {
+                    required: true,
+                    content: {
+                        'application/json': {
+                            schema: {
+                                type: 'object',
+                                properties: {
+                                    titre: {
+                                        type: 'string',
+                                        description: 'Entrez le titre de la tâche à ajouter',
+                                        default: 'Nouvelle tâche'
+                                    },
+                                    description: {
+                                        type: 'string',
+                                        description: 'Entrez la description de la tâche à ajouter',
+                                        default: 'Description de la nouvelle tâche'
+                                    },
+                                    date_debut: {
+                                        type: 'string',
+                                        description: 'Entrez la date de début de la tâche à ajouter',
+                                        default: '2024-05-04'
+                                    },
+                                    date_echeance: {
+                                        type: 'string',
+                                        description: 'Entrez la date d\'échéance de la tâche à ajouter',
+                                        default: '2024-05-10'
+                                    }
+                                }
+                            }
                         }
                     }
-                ],
+                },
                 responses: {
                     '200': {
                         description: 'Tâche ajoutée avec succès'
@@ -349,11 +339,6 @@ const documentation = {
                                         type: 'string',
                                         description: 'Entrez le nouveau status de la tâche à modifier',
                                         default: '2024-05-10'
-                                    },
-                                    complete: {
-                                        type: 'integer',
-                                        description: 'Entrez le nouveau status de la tâche à modifier',
-                                        default: 0
                                     }
                                 }
                             }

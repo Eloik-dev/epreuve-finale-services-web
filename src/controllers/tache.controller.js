@@ -79,7 +79,7 @@ class TacheController {
      * Modifie le status d'une tâche pour un utilisateur
      */
     static async modifierTache(req, res) {
-        const { id, titre, description, date_debut, date_echeance, complete } = req.body;
+        const { id, titre, description, date_debut, date_echeance } = req.body;
         const cleApi = req.headers?.authorization.split(' ')[1];
 
         let changements = {};
@@ -124,15 +124,6 @@ class TacheController {
                 errors.push("Vous devez spécifier un paramètre 'date_echeance' valide comme nouvelle date d'échéance de la tâche. (ex: 2024-05-04)");
             } else {
                 changements.date_echeance = date_echeance;
-            }
-        }
-
-        // Complete
-        if (complete !== undefined) {
-            if (isNaN(Number(complete))) {
-                errors.push("Vous devez spécifier un paramètre 'complete' valide comme nouveau status de la tâche. (0 ou 1)");
-            } else {
-                changements.complete = complete;
             }
         }
 
