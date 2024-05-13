@@ -177,7 +177,7 @@ class TacheController {
             throw new HttpError("La tâche n'a pas été trouvée.", 404);
         }
 
-        res.status(200).send("La tâche a été supprimée avec succès.");
+        res.status(200).json({ message: "La tâche a été supprimée avec succès." });
     }
 }
 

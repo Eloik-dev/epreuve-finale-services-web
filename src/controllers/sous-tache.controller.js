@@ -112,7 +112,7 @@ class SousTacheController {
 
         await SousTache.supprimer(cleApi, Number(id));
 
-        res.status(200).send("La sous-tâche a été supprimée avec succès.");
+        res.status(200).json({ message: "La sous-tâche a été supprimée avec succès." });
     }
 }
 
