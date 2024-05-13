@@ -391,27 +391,28 @@ const documentation = {
                 tags: ['Tâches'],
                 summary: 'Modifie le status d\'une tâche pour un utilisateur',
                 operationId: 'modifierStatusTache',
-                parameters: [
-                    {
-                        name: 'id',
-                        in: 'query',
-                        description: 'Entrez l\'ID de la tâche à modifier',
-                        required: true,
-                        schema: {
-                            type: 'integer'
-                        }
-                    },
-                    {
-                        name: 'complete',
-                        in: 'query',
-                        description: 'Entrez le nouveau status de la tâche à modifier',
-                        required: false,
-                        schema: {
-                            type: 'integer',
-                            enum: [0, 1]
+                requestBody: {
+                    required: true,
+                    content: {
+                        'application/json': {
+                            schema: {
+                                type: 'object',
+                                properties: {
+                                    id: {
+                                        type: 'integer',
+                                        description: 'Entrez l\'ID de la tâche à modifier',
+                                        default: '0'
+                                    },
+                                    complete: {
+                                        type: 'integer',
+                                        description: 'Entrez le nouveau status de la tâche à modifier',
+                                        default: 0
+                                    }
+                                }
+                            }
                         }
                     }
-                ],
+                },
                 responses: {
                     '200': {
                         description: 'Status de la tâche modifié avec succès'
